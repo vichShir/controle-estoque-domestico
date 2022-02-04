@@ -1,0 +1,161 @@
+/**
+ * Folha de estilo do game
+ */
+
+select{
+  width: 75px;
+  height: 28px;
+  background-color: #2980B9;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+  font-family: 'Roboto', sans-serif;
+  color: #FFF;
+ }
+
+.sec-game{
+  width: 1020px;
+  height: auto;
+}
+
+/**
+ * Opcoes do jogo
+ */
+.game-settings .form-options{
+  width: 45%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+}
+
+#form-button{
+  width: 243px;
+  height: 43px;
+  margin: 20px 0px 40px 0px;
+  background-color: #2980B9;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border: none;
+
+  font-family: 'Roboto', sans-serif; 
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 28px;
+  color: #FFF;
+  cursor: pointer;
+}
+
+/**
+ * Informacoes da partida
+ */
+.game-time{
+  display: inline-flex;
+}
+
+.game-time div{
+  padding: 10px;
+}
+
+.game-play div{
+  width: 10em;
+  margin: auto;
+}
+
+.active-trap{
+  width: max-content;
+  margin: 10px auto 10px auto;
+  cursor: pointer;
+}
+
+/**
+ * Historico
+ */
+.sec-hist{
+  width: auto;
+  margin-top: 1.5em;
+
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1.5em;
+  line-height: 28px;
+}
+
+.sec-hist div{
+  display: flex;
+}
+
+.sec-hist h4{
+  margin-top: 0px;
+}
+
+.sec-hist .game-status{
+  font-weight: bold;
+}
+
+/* Geral e Primeira linha */
+.hist-row{
+  width: 720px;
+  height: 40px;
+  margin: auto;
+  font-size: 0.75em;
+}
+
+.hist-row *{
+  width: 240px;
+}
+
+.hist-row div, .hist-row p, .hist-row img{
+  width: auto;
+}
+
+.hist-row h4{
+  padding-top: 8px;
+}
+
+/* Segunda linha */
+.hist-row2{
+  margin: 16px auto;
+}
+
+.hist-row2 *{
+  width: 180px;
+}
+
+.hist-row2 img, .hist-row2 .to-right, .hist-row2 p{
+  width: auto;
+}
+
+/* Linha separadora */
+.hist-line{
+  width: 720px;
+}
+
+
+table {
+  margin: 1em auto;
+  border-collapse: collapse;
+}
+td {
+  background: #C4E538; 
+  border: 1px solid #A3CB38;
+  width: 40px;
+  height: 40px;
+
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  color: #000;
+  text-align: center;
+}
+.fechada {
+  background: #009432;
+  color: #FFF;
+}
+
+.red-alert{
+  background-color: #e84118;
+}
