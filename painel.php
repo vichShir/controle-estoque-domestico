@@ -9,7 +9,6 @@
         header("Location:index.php");
         die();
     }
-
 ?>
 
 <!DOCTYPE html>
@@ -20,6 +19,7 @@
     <link href="resources/css/main-style.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/form-style.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/footer-style.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <!-- Importando fontes Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,9 +59,11 @@
     <section class="sec-panel sec-form">
         <h2>Busca</h2>
         <hr>
-        <form name="formulario-login" action="index.php" method="POST">
-            <p class="form-input"><input type="text" name="username" placeholder="Usuário" size="20" maxlength="20" required></p>
-            <p class="form-input"><input type="password" name="password" placeholder="Senha" size="20"  minlength="8" maxlength="20" required></p>
+        <form name="formulario-login" action="painel.php" method="POST">
+            <p class="form-input">Nome (Opcional)<input type="text" name="nome" placeholder="Exemplo: água de coco" size="50" maxlength="50"></p>
+            <p class="form-input">Categoria (Opcional)<input type="text" name="categoria" placeholder="Exemplo: bebidas" size="30" maxlength="30"></p>
+            <p class="form-input">Local (Opcional)<input type="text" name="local" placeholder="Exemplo: cozinha" size="20" maxlength="20"></p>
+            <p class="form-input">Código de barras (Opcional)<input type="text" name="barcode" placeholder="Exemplo: 1112223334445" size="13" minlength="13" maxlength="13"></p>
 
             <!-- atributo onclick é temporário p/ esta Parcial 1 -->
             <p><input id="form-button" type="submit" value="Buscar"></p>
@@ -72,6 +74,95 @@
 
         <div style = "font-size:12px; color:#cc0000; margin-top:10px"><?php echo isset($error) ? $error : ""; ?></div>
     </section>
+
+    <script src="html5-qrcode.min.js"></script>
+
+    <div style="width: 500px" id="reader"></div>
+
+    <script>
+        var html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 60, qrbox: 250 });
+        //html5QrcodeScanner.render(onScanSuccess);
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Handle on success condition with the decoded text or result.
+            console.log(`Scan result: ${decodedText}`, decodedResult);
+            alert(decodedText);
+            // ...
+            html5QrcodeScanner.clear();
+            // ^ this will stop the scanner (video feed) and clear the scan area.
+        }
+
+        html5QrcodeScanner.render(onScanSuccess);
+    </script>
+
+    <?php
+        if(isset($_POST['nome']))
+        {
+
+            $nome = $_POST['nome'];
+            $categoria = $_POST['categoria'];
+            $local = $_POST['local'];
+            $barcode = $_POST['barcode'];
+
+            function add_filter(&$first_filter, $var, $var_name)
+            {
+                if(!empty($var) && $first_filter)
+                {
+                    $first_filter = false;
+                    return " WHERE $var_name LIKE '%$var%'";
+                }
+                else if(!empty($var) && !$first_filter)
+                    return " AND $var_name LIKE '%$var%'";
+            }
+
+            $sql_login = "SELECT LOCAL, SUBLOCAL, CATEGORIA, NOME, UNIDADE_MEDIDA, QUANTIDADE, DATA_COMPRA, VENCIMENTO FROM VW_PRODUTOS";
+
+            $first_filter = true;
+            $sql_login .= add_filter($first_filter, $nome, 'NOME');
+            $sql_login .= add_filter($first_filter, $categoria, 'CATEGORIA');
+            $sql_login .= add_filter($first_filter, $local, 'LOCAL');
+            $sql_login .= add_filter($first_filter, $barcode, 'BARCODE');
+
+            $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
+            $result = $db->getAllRowsFromQuery($sql_login);
+            $db->close();
+
+
+
+            echo "
+            <table class='table table-dark table-striped table-hover'>
+                <thead>
+                    <tr>
+                        <th scope='col'>LOCAL</th>
+                        <th scope='col'>SUBLOCAL</th>
+                        <th scope='col'>CATEGORIA</th>
+                        <th scope='col'>NOME</th>
+                        <th scope='col'>UNIDADE MEDIDA</th>
+                        <th scope='col'>QUANTIDADE</th>
+                        <th scope='col'>DATA COMPRA</th>
+                        <th scope='col'>VENCIMENTO</th>
+                    </tr>
+                </thead>
+                <tbody>";
+                for($i = 0; $i < sizeof($result); $i++)
+                {
+                    echo "<tr>";
+                    echo "
+                    <th scope='row'>" . $result[$i]['LOCAL'] . "</th>
+                    <td>" . $result[$i]['SUBLOCAL'] . "</td>
+                    <td>" . $result[$i]['CATEGORIA'] . "</td>
+                    <td>" . $result[$i]['NOME'] . "</td>
+                    <td>" . $result[$i]['UNIDADE_MEDIDA'] . "</td>
+                    <td>" . $result[$i]['QUANTIDADE'] . "</td>
+                    <td>" . (empty($result[$i]['DATA_COMPRA']) ? 'SEM INFORMAÇÃO' : $result[$i]['DATA_COMPRA']) . "</td>
+                    <td>" . (empty($result[$i]['VENCIMENTO']) ? 'SEM INFORMAÇÃO' : $result[$i]['VENCIMENTO']) . "</td>";
+                    echo "</tr>";
+                }
+                echo "</tbody>
+            </table>";
+        }
+    ?>
 
     <!-- Rodapé -->
     <footer>
