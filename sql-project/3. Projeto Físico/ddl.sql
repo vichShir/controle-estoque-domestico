@@ -12,7 +12,8 @@ CREATE TABLE item
 (
 	coditem INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	barcode CHAR(13) NULL,
-	nome VARCHAR(80) NOT NULL,
+	nome VARCHAR(50) NOT NULL,
+	categoria VARCHAR(30) NULL,
 	PRIMARY KEY(coditem)
 );
 
@@ -32,7 +33,7 @@ CREATE TABLE compra
 	dtcompra DATE NULL,
 	dtvencimento DATE NULL,
 	coditem INT UNSIGNED NOT NULL,
-	codlocal INT UNSIGNED NOT NULL,
+	codlocal TINYINT UNSIGNED NOT NULL,
 	PRIMARY KEY(codcompra),
 	FOREIGN KEY(coditem) REFERENCES item(coditem),
 	FOREIGN KEY(codlocal) REFERENCES local(codlocal)
