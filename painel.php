@@ -37,33 +37,22 @@
         <ul>
             <li>Usuário</li>
             <li>Local</li>
-            <li>Item</li>
-            <li>ItemLocal</li>
-        </ul>
-        <li>Consultar</li>
-        <ul>
-            <li>Itens</li>
-            <ul>
-                <li>Quantidade</li>
-                <li>Vencimento</li>
-                <li>Localização</li>
-                <li>Categoria</li>
-            </ul>
+            <li>Item/Compra</li>
         </ul>
     </ul>
 
-    <p>Buscar por: barcode, nome, categoria ou local</p>
-    <p>Ver: quantidade, dia da compra, vencimento</p>
+    <a href="painel.php">Home</a>
+    <a href="cadastro.php">Cadastrar</a>
 
     <!-- Formulário de Login -->
     <section class="sec-panel sec-form">
         <h2>Busca</h2>
         <hr>
         <form name="formulario-login" action="painel.php" method="POST">
-            <p class="form-input">Nome (Opcional)<input type="text" name="nome" placeholder="Exemplo: água de coco" size="50" maxlength="50"></p>
-            <p class="form-input">Categoria (Opcional)<input type="text" name="categoria" placeholder="Exemplo: bebidas" size="30" maxlength="30"></p>
-            <p class="form-input">Local (Opcional)<input type="text" name="local" placeholder="Exemplo: cozinha" size="20" maxlength="20"></p>
-            <p class="form-input">Código de barras (Opcional)<input type="text" name="barcode" placeholder="Exemplo: 1112223334445" size="13" minlength="13" maxlength="13"></p>
+            <p class="form-input">Nome<input type="text" name="nome" placeholder="(Opcional)" size="50" maxlength="50"></p>
+            <p class="form-input">Categoria<input type="text" name="categoria" placeholder="(Opcional)" size="30" maxlength="30"></p>
+            <p class="form-input">Local<input type="text" name="local" placeholder="(Opcional)" size="20" maxlength="20"></p>
+            <p class="form-input">Código de barras<input type="text" name="barcode" placeholder="(Opcional)" size="13" minlength="13" maxlength="13"></p>
 
             <!-- atributo onclick é temporário p/ esta Parcial 1 -->
             <p><input id="form-button" type="submit" value="Buscar"></p>

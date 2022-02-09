@@ -90,7 +90,6 @@
     <script>
         var html5QrcodeScanner = new Html5QrcodeScanner(
             "reader", { fps: 60, qrbox: 250 });
-        //html5QrcodeScanner.render(onScanSuccess);
 
         function onScanSuccess(decodedText, decodedResult) {
             // Handle on success condition with the decoded text or result.
