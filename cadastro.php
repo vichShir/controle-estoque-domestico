@@ -37,12 +37,11 @@
 
     <!-- Formulário de Login -->
     <section class="sec-panel sec-form">
-        <h2>Produto</h2>
+        <h2>Local</h2>
         <hr>
         <form name="formulario-login" action="cadastro.php" method="POST">
-            <p class="form-input">Código de barras<input type="text" name="barcode" placeholder="(Opcional)" size="13" maxlength="13"></p>
-            <p class="form-input">Nome<input type="text" name="nome" placeholder="(Obrigatório)" size="50" maxlength="50" required></p>
-            <p class="form-input">Categoria<input type="text" name="categoria" placeholder="(Opcional)" size="30" maxlength="30"></p>
+            <p class="form-input">Nome<input type="text" name="local_nome" placeholder="(Obrigatório)" size="20" maxlength="20" required></p>
+            <p class="form-input">Sublocal<input type="text" name="sublocal" placeholder="(Opcional)" size="20" maxlength="20"></p>
 
             <!-- atributo onclick é temporário p/ esta Parcial 1 -->
             <p><input id="form-button" type="submit" value="Cadastrar"></p>
@@ -51,15 +50,10 @@
     </section>
 
     <section class="sec-panel sec-form">
-        <h2>Registro de Compra</h2>
+        <h2>Categoria</h2>
         <hr>
         <form name="formulario-login" action="cadastro.php" method="POST">
-            <p class="form-input">Unidade de medida *<input type="text" name="unidademedida" placeholder="(Obrigatório)" size="10" maxlength="10" required></p>
-            <p class="form-input">Quantidade *<input type="number" name="quantidade" placeholder="(Obrigatório)" max="9999.99" step="0.01" required></p>
-            <p class="form-input">Data de compra<input type="date" name="dtcompra"></p>
-            <p class="form-input">Data de vencimento<input type="date" name="dtvencimento"></p>
-            <p class="form-input">Código do item *<input type="number" name="coditem" placeholder="(Teste)" required></p>
-            <p class="form-input">Código do local *<input type="number" name="codlocal" placeholder="(Teste)" required></p>
+            <p class="form-input">Nome<input type="text" name="cat_nome" placeholder="(Obrigatório)" size="20" maxlength="20" required></p>
 
             <!-- atributo onclick é temporário p/ esta Parcial 1 -->
             <p><input id="form-button" type="submit" value="Cadastrar"></p>
@@ -67,12 +61,77 @@
         <div style = "font-size:12px; color:#cc0000; margin-top:10px"><?php echo isset($error) ? $error : ""; ?></div>
     </section>
 
+    <section class="sec-panel sec-form">
+        <h2>Unidade Medida</h2>
+        <hr>
+        <form name="formulario-login" action="cadastro.php" method="POST">
+            <p class="form-input">Nome<input type="text" name="medida_nome" placeholder="(Obrigatório)" size="16" maxlength="16" required></p>
+
+            <!-- atributo onclick é temporário p/ esta Parcial 1 -->
+            <p><input id="form-button" type="submit" value="Cadastrar"></p>
+        </form>
+        <div style = "font-size:12px; color:#cc0000; margin-top:10px"><?php echo isset($error) ? $error : ""; ?></div>
+    </section>
+
+
+    <section class="sec-panel sec-form">
+        <h2>Produto</h2>
+        <hr>
+        <form name="formulario-login" action="cadastro.php" method="POST">
+            <p class="form-input">Código de barras<input type="text" name="barcode" placeholder="(Opcional)" size="13" maxlength="13"></p>
+            <p class="form-input">Nome<input type="text" name="nome" placeholder="(Obrigatório)" size="50" maxlength="50" required></p>
+            <p class="form-input">Quantidade<input type="number" name="quantidade" placeholder="(Obrigatório)" max="9999.99" step="0.01" required></p>
+            <p class="form-input">Código do local<input type="number" name="codlocal" placeholder="(Teste)" required></p>
+            <p class="form-input">Código da categoria<input type="number" name="codcategoria" placeholder="(Teste)" required></p>
+            <p class="form-input">Código da unidade de medida<input type="number" name="codmedida" placeholder="(Teste)" required></p>
+
+            <!-- atributo onclick é temporário p/ esta Parcial 1 -->
+            <p><input id="form-button" type="submit" value="Cadastrar"></p>
+        </form>
+        <div style = "font-size:12px; color:#cc0000; margin-top:10px"><?php echo isset($error) ? $error : ""; ?></div>
+    </section>
+
+
     <?php
-        if(isset($_POST['nome']))
+        if(isset($_POST['local_nome']))
         {
-            $nome = $_POST['nome'] ?? '';
+            $nome = $_POST['local_nome'] ?? '';
+            $sublocal = $_POST['sublocal'] ?? '';
+
+            # Cadastrar
+            $sql_login = "INSERT INTO local(nome, sublocal) VALUES('$nome', NULLIF('$sublocal', ''))";
+            $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
+            $db->executeCommand($sql_login);
+            $db->close();
+        }
+        else if(isset($_POST['cat_nome']))
+        {
+            $nome = $_POST['cat_nome'] ?? '';
+
+            # Cadastrar
+            $sql_login = "INSERT INTO categoria(nome) VALUES('$nome')";
+            $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
+            $db->executeCommand($sql_login);
+            $db->close();
+        }
+        else if(isset($_POST['medida_nome']))
+        {
+            $nome = $_POST['medida_nome'] ?? '';
+
+            # Cadastrar
+            $sql_login = "INSERT INTO unidademedida(nome) VALUES('$nome')";
+            $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
+            $db->executeCommand($sql_login);
+            $db->close();
+        }
+        else if(isset($_POST['nome']))
+        {
             $barcode = $_POST['barcode'] ?? '';
-            $categoria = $_POST['categoria'] ?? '';
+            $nome = $_POST['nome'] ?? '';
+            $quantidade = $_POST['quantidade'] ?? '';
+            $codlocal = $_POST['codlocal'] ?? '';
+            $codcategoria = $_POST['codcategoria'] ?? '';
+            $codmedida = $_POST['codmedida'] ?? '';
 
             # Preprocessamento
             $unwanted_array = array(    'Š'=>'S', 'š'=>'s', 'Ž'=>'Z', 'ž'=>'z', 'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
@@ -81,29 +140,10 @@
                             'è'=>'e', 'é'=>'e', 'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o', 'ô'=>'o', 'õ'=>'o',
                             'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'þ'=>'b', 'ÿ'=>'y' );
             $nome = strtr($nome, $unwanted_array);
-            $categoria = strtr($categoria, $unwanted_array);
-
             $nome = strtoupper($nome);
-            $categoria = strtoupper($categoria);
 
             # Cadastrar
-            $sql_login = "INSERT INTO item(barcode, nome, categoria) VALUES(NULLIF('$barcode', ''), '$nome', NULLIF('$categoria', ''))";
-            $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
-            $db->executeCommand($sql_login);
-            $db->close();
-        }
-        else if(isset($_POST['unidademedida']))
-        {
-            $unidademedida = $_POST['unidademedida'] ?? '';
-            $quantidade = $_POST['quantidade'] ?? '';
-            $dtcompra = $_POST['dtcompra'] ?? '';
-            $dtvencimento = $_POST['dtvencimento'] ?? '';
-            $coditem = $_POST['coditem'] ?? '';
-            $codlocal = $_POST['codlocal'] ?? '';
-
-            # Cadastrar
-            $sql_login = "INSERT INTO compra(unidademedida, quantidade, dtcompra, dtvencimento, coditem, codlocal) 
-                            VALUES(NULLIF('$unidademedida', ''), NULLIF('$quantidade', ''), NULLIF('$dtcompra', ''), NULLIF('$dtvencimento', ''), NULLIF('$coditem', ''), NULLIF('$codlocal', ''))";
+            $sql_login = "INSERT INTO item(barcode, nome, quantidade, codlocal, codcategoria, codmedida) VALUES(NULLIF('$barcode', ''), '$nome', '$quantidade', '$codlocal', '$codcategoria', '$codmedida')";
             $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
             $db->executeCommand($sql_login);
             $db->close();

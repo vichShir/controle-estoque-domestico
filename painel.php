@@ -36,7 +36,14 @@
         <li>Cadastrar</li>
         <ul>
             <li>Usuário</li>
-            <li>Local</li>
+            <li>Locais</li>
+            <li>Categorias</li>
+            <li>Unidades de Medida</li>
+            <li>Item/Compra</li>
+        </ul>
+        <li>Atualizar</li>
+        <ul>
+            <li>Usuário</li>
             <li>Item/Compra</li>
         </ul>
     </ul>
@@ -88,7 +95,6 @@
     <?php
         if(isset($_POST['nome']))
         {
-
             $nome = $_POST['nome'];
             $categoria = $_POST['categoria'];
             $local = $_POST['local'];
@@ -105,7 +111,7 @@
                     return " AND $var_name LIKE '%$var%'";
             }
 
-            $sql_login = "SELECT LOCAL, SUBLOCAL, CATEGORIA, NOME, UNIDADE_MEDIDA, QUANTIDADE, DATA_COMPRA, VENCIMENTO FROM VW_PRODUTOS";
+            $sql_login = "SELECT LOCAL, SUBLOCAL, CATEGORIA, NOME, UNIDADE_MEDIDA, QUANTIDADE FROM VW_PRODUTOS";
 
             $first_filter = true;
             $sql_login .= add_filter($first_filter, $nome, 'NOME');
@@ -129,8 +135,6 @@
                         <th scope='col'>NOME</th>
                         <th scope='col'>UNIDADE MEDIDA</th>
                         <th scope='col'>QUANTIDADE</th>
-                        <th scope='col'>DATA COMPRA</th>
-                        <th scope='col'>VENCIMENTO</th>
                     </tr>
                 </thead>
                 <tbody>";
@@ -143,9 +147,7 @@
                     <td>" . $result[$i]['CATEGORIA'] . "</td>
                     <td>" . $result[$i]['NOME'] . "</td>
                     <td>" . $result[$i]['UNIDADE_MEDIDA'] . "</td>
-                    <td>" . $result[$i]['QUANTIDADE'] . "</td>
-                    <td>" . (empty($result[$i]['DATA_COMPRA']) ? 'SEM INFORMAÇÃO' : $result[$i]['DATA_COMPRA']) . "</td>
-                    <td>" . (empty($result[$i]['VENCIMENTO']) ? 'SEM INFORMAÇÃO' : $result[$i]['VENCIMENTO']) . "</td>";
+                    <td>" . $result[$i]['QUANTIDADE'] . "</td>";
                     echo "</tr>";
                 }
                 echo "</tbody>
