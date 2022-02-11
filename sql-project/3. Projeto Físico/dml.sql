@@ -7,10 +7,8 @@ INSERT INTO usuario(nome, username, senha) VALUES('Victor Shirasuna', 'vichShir'
 INSERT INTO local(nome, sublocal) VALUES('Cozinha', 'Armazem');
 
 /* Item */
-INSERT INTO item(barcode, nome, categoria) VALUES(NULL, 'AGUA DE COCO CAIXA 1L KERO COCO', 'BEBIDAS');
-
-/* Compra */
-INSERT INTO compra(unidademedida, quantidade, dtcompra, dtvencimento, coditem, codlocal) VALUES('UNITARIO', 6, NULL, NULL, 1, 1);
+INSERT INTO item(barcode, nome, categoria, unidademedida, quantidade, codlocal) VALUES('7891103217975', 'AGUA DE COCO CAIXA 1L KERO COCO', 'BEBIDAS', 'UNITARIO', 6, 1);
+INSERT INTO item(barcode, nome, categoria, unidademedida, quantidade, codlocal) VALUES('1112223334445', 'AGUA COM GAS CRYSTAL 1L', 'BEBIDAS', 'UNITARIO', 3, 1);
 
 
 /*** VIEWS ***/
@@ -18,11 +16,9 @@ INSERT INTO compra(unidademedida, quantidade, dtcompra, dtvencimento, coditem, c
 /* Produtos */
 CREATE VIEW VW_PRODUTOS
 AS
-SELECT l.nome LOCAL, l.sublocal SUBLOCAL, i.categoria CATEGORIA, i.barcode BARCODE, i.nome NOME, c.unidademedida UNIDADE_MEDIDA, c.quantidade QUANTIDADE, c.dtcompra DATA_COMPRA, c.dtvencimento VENCIMENTO
-	FROM compra c INNER JOIN item i
-		ON c.coditem = i.coditem
-		INNER JOIN local l
-		ON c.codlocal = l.codlocal;
+SELECT l.nome LOCAL, l.sublocal SUBLOCAL, i.categoria CATEGORIA, i.barcode BARCODE, i.nome NOME, i.unidademedida UNIDADE_MEDIDA, i.quantidade QUANTIDADE
+	FROM local l INNER JOIN item i
+		ON l.codlocal = i.codlocal;
 
 /* Usuarios */
 CREATE VIEW VW_USERS

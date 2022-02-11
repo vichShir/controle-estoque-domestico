@@ -8,15 +8,6 @@ CREATE TABLE usuario
 	PRIMARY KEY(codusuario)
 );
 
-CREATE TABLE item
-(
-	coditem INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	barcode CHAR(13) NULL,
-	nome VARCHAR(50) NOT NULL,
-	categoria VARCHAR(30) NULL,
-	PRIMARY KEY(coditem)
-);
-
 CREATE TABLE local
 (
 	codlocal TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -25,31 +16,26 @@ CREATE TABLE local
 	PRIMARY KEY(codlocal)
 );
 
-CREATE TABLE compra
+CREATE TABLE item
 (
-	codcompra INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	coditem INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	barcode CHAR(13) NULL,
+	nome VARCHAR(50) NOT NULL,
+	categoria VARCHAR(30) NULL,
 	unidademedida VARCHAR(10) NOT NULL,
 	quantidade DECIMAL(6,2) NOT NULL,
-	dtcompra DATE NULL,
-	dtvencimento DATE NULL,
-	coditem INT UNSIGNED NOT NULL,
 	codlocal TINYINT UNSIGNED NOT NULL,
-	PRIMARY KEY(codcompra),
-	FOREIGN KEY(coditem) REFERENCES item(coditem),
+	PRIMARY KEY(coditem),
 	FOREIGN KEY(codlocal) REFERENCES local(codlocal)
 );
 
-CREATE INDEX ix_compra_item
-ON compra(coditem);
-
-CREATE INDEX ix_compra_local
-ON compra(codlocal);
+CREATE INDEX ix_item_local
+ON item(codlocal);
 
 SELECT * FROM usuario;
-SELECT * FROM item;
 SELECT * FROM local;
-SELECT * FROM compra;
+SELECT * FROM item;
 
 /*
-DROP TABLE compra, local, item, usuario;
+DROP TABLE item, local, usuario;
 */
