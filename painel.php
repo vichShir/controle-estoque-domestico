@@ -57,9 +57,41 @@
         <hr>
         <form name="formulario-login" action="painel.php" method="POST">
             <p class="form-input">Nome<input type="text" name="nome" placeholder="(Opcional)" size="50" maxlength="50"></p>
-            <p class="form-input">Categoria<input type="text" name="categoria" placeholder="(Opcional)" size="30" maxlength="30"></p>
-            <p class="form-input">Local<input type="text" name="local" placeholder="(Opcional)" size="20" maxlength="20"></p>
             <p class="form-input">Código de barras<input type="text" name="barcode" placeholder="(Opcional)" size="13" minlength="13" maxlength="13"></p>
+
+            <p class="form-input">Categoria
+                <select id="categoria" name='categoria'>
+                    <option value="">Selecionar</option>
+                    <?php
+                        $sql_login = "SELECT DISTINCT nome FROM categoria";
+                        $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
+                        $result = $db->getAllRowsFromQuery($sql_login);
+                        $db->close();
+
+                        foreach ($result as $value)
+                        {
+                            echo "<option value='" . $value['nome'] . "'>" . $value['nome'] . "</option>";
+                        }
+                    ?>
+                </select>
+            </p>
+
+            <p class="form-input">Local
+                <select id="local" name='local'>
+                    <option value="">Selecionar</option>
+                    <?php
+                        $sql_login = "SELECT DISTINCT nome FROM local";
+                        $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
+                        $result = $db->getAllRowsFromQuery($sql_login);
+                        $db->close();
+
+                        foreach ($result as $value)
+                        {
+                            echo "<option value='" . $value['nome'] . "'>" . $value['nome'] . "</option>";
+                        }
+                    ?>
+                </select>
+            </p>
 
             <!-- atributo onclick é temporário p/ esta Parcial 1 -->
             <p><input id="form-button" type="submit" value="Buscar"></p>
