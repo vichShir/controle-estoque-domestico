@@ -81,9 +81,125 @@
             <p class="form-input">Código de barras<input type="text" name="barcode" placeholder="(Opcional)" size="13" maxlength="13"></p>
             <p class="form-input">Nome<input type="text" name="nome" placeholder="(Obrigatório)" size="50" maxlength="50" required></p>
             <p class="form-input">Quantidade<input type="number" name="quantidade" placeholder="(Obrigatório)" max="9999.99" step="0.01" required></p>
-            <p class="form-input">Código do local<input type="number" name="codlocal" placeholder="(Teste)" required></p>
-            <p class="form-input">Código da categoria<input type="number" name="codcategoria" placeholder="(Teste)" required></p>
-            <p class="form-input">Código da unidade de medida<input type="number" name="codmedida" placeholder="(Teste)" required></p>
+
+            <p class="form-input">Local
+                <select id="local" name='local'>
+                    <option value="">Selecionar</option>
+                    <?php
+                        $sql_login = "SELECT DISTINCT nome FROM local";
+                        $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
+                        $result = $db->getAllRowsFromQuery($sql_login);
+                        $db->close();
+
+                        foreach ($result as $value)
+                        {
+                            echo "<option value='" . $value['nome'] . "'>" . $value['nome'] . "</option>";
+                        }
+                    ?>
+                </select>
+            </p>
+
+            <p class="form-input">Sublocal
+                <select id="sublocais" name='sublocal'>
+                    <option value="">Selecionar</option>
+                </select>
+            </p>
+
+            <p class="form-input">Categoria
+                <select id="categoria" name='categoria'>
+                    <option value="">Selecionar</option>
+                    <?php
+                        $sql_login = "SELECT DISTINCT nome FROM categoria";
+                        $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
+                        $result = $db->getAllRowsFromQuery($sql_login);
+                        $db->close();
+
+                        foreach ($result as $value)
+                        {
+                            echo "<option value='" . $value['nome'] . "'>" . $value['nome'] . "</option>";
+                        }
+                    ?>
+                </select>
+            </p>
+
+            <p class="form-input">Unidade de Medida
+                <select id="medida" name='medida'>
+                    <option value="">Selecionar</option>
+                    <?php
+                        $sql_login = "SELECT DISTINCT nome FROM unidademedida";
+                        $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
+                        $result = $db->getAllRowsFromQuery($sql_login);
+                        $db->close();
+
+                        foreach ($result as $value)
+                        {
+                            echo "<option value='" . $value['nome'] . "'>" . $value['nome'] . "</option>";
+                        }
+                    ?>
+                </select>
+            </p>
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script>
+                "use strict";
+
+                let xhttp;
+                function enviarDados(local)
+                {
+                    xhttp = new XMLHttpRequest();
+                    
+                    if (!xhttp) 
+                    {
+                        alert('Não foi possível criar um objeto XMLHttpRequest.');
+                        return false;
+                    }
+                    xhttp.onreadystatechange = mostraResposta;
+                    xhttp.open('POST', 'search_sublocal.php', true);
+                    xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhttp.send('local=' + encodeURIComponent(local));
+                }
+
+                function mostraResposta() 
+                {
+                    try
+                    {
+                        if (xhttp.readyState === XMLHttpRequest.DONE)
+                        {
+                            if (xhttp.status === 200)
+                            {
+                                let resposta = JSON.parse(xhttp.responseText);
+                                let sublocais = resposta.sublocais;
+
+                                console.log(sublocais);
+
+                                var s = document.getElementById('sublocais');
+                                var options;
+
+                                for (var i = 0; i <= s.length; i++)
+                                {
+                                    options += "<option value='" + sublocais[i]['sublocal'] + "'>" + sublocais[i]['sublocal'] + "</option>";
+                                }
+
+                                s.innerHTML = options;
+                            }
+                            else
+                            {
+                                alert('Um problema ocorreu.');
+                            }
+                        }
+                    } 
+                    catch (e)
+                    {
+                        alert("Ocorreu uma exceção: " + e.description);
+                    }
+                }
+
+                $('#local').change(function()
+                {
+                    enviarDados($(this).val());
+                    //alert($(this).val());
+                })
+            </script>
 
             <!-- atributo onclick é temporário p/ esta Parcial 1 -->
             <p><input id="form-button" type="submit" value="Cadastrar"></p>
@@ -129,9 +245,11 @@
             $barcode = $_POST['barcode'] ?? '';
             $nome = $_POST['nome'] ?? '';
             $quantidade = $_POST['quantidade'] ?? '';
-            $codlocal = $_POST['codlocal'] ?? '';
-            $codcategoria = $_POST['codcategoria'] ?? '';
-            $codmedida = $_POST['codmedida'] ?? '';
+
+            $local = $_POST['local'] ?? '';
+            $sublocal = $_POST['sublocal'] ?? '';
+            $categoria = $_POST['categoria'] ?? '';
+            $medida = $_POST['medida'] ?? '';
 
             # Preprocessamento
             $unwanted_array = array(    'Š'=>'S', 'š'=>'s', 'Ž'=>'Z', 'ž'=>'z', 'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
@@ -143,8 +261,14 @@
             $nome = strtoupper($nome);
 
             # Cadastrar
-            $sql_login = "INSERT INTO item(barcode, nome, quantidade, codlocal, codcategoria, codmedida) VALUES(NULLIF('$barcode', ''), '$nome', '$quantidade', '$codlocal', '$codcategoria', '$codmedida')";
             $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
+
+            $codlocal = $db->getRowFromQuery("SELECT codlocal FROM local WHERE nome = '$local' AND sublocal = '$sublocal'")['codlocal'];
+            $codcategoria = $db->getRowFromQuery("SELECT codcategoria FROM categoria WHERE nome = '$categoria'")['codcategoria'];
+            $codmedida = $db->getRowFromQuery("SELECT codmedida FROM unidademedida WHERE nome = '$medida'")['codmedida'];
+
+            $sql_login = "INSERT INTO item(barcode, nome, quantidade, codlocal, codcategoria, codmedida) VALUES(NULLIF('$barcode', ''), '$nome', '$quantidade', '$codlocal', '$codcategoria', '$codmedida')";
+
             $db->executeCommand($sql_login);
             $db->close();
         }
