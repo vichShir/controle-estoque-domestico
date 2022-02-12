@@ -175,7 +175,7 @@
                                 var s = document.getElementById('sublocais');
                                 var options;
 
-                                for (var i = 0; i <= s.length; i++)
+                                for (var i = 0; i < sublocais.length; i++)
                                 {
                                     options += "<option value='" + sublocais[i]['sublocal'] + "'>" + sublocais[i]['sublocal'] + "</option>";
                                 }
