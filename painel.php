@@ -41,7 +41,6 @@
         <hr>
         <form name="formulario-login" action="painel.php" method="POST">
             <p class="form-input">Nome<input type="text" name="nome" placeholder="(Opcional)" size="50" maxlength="50"></p>
-            <p class="form-input">Código de barras<input type="text" name="barcode" placeholder="(Opcional)" size="13" minlength="13" maxlength="13"></p>
 
             <p class="form-input">Categoria
                 <select id="categoria" name='categoria'>
@@ -77,35 +76,87 @@
                 </select>
             </p>
 
+            <p onclick="scanner();">Usar Scanner</p>
             <!-- atributo onclick é temporário p/ esta Parcial 1 -->
             <p><input id="form-button" type="submit" value="Buscar"></p>
         </form>
 
-        <!-- Link para cadastro -->
-        <p><a href="cadastro.php"></a></p>
-
         <div style = "font-size:12px; color:#cc0000; margin-top:10px"><?php echo isset($error) ? $error : ""; ?></div>
     </section>
 
+    <!--QR Code Reader-->
     <script src="html5-qrcode.min.js"></script>
-
     <div style="width: 500px" id="reader"></div>
-
     <script>
-        var html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader", { fps: 60, qrbox: 250 });
-        //html5QrcodeScanner.render(onScanSuccess);
+        "use strict";
 
-        function onScanSuccess(decodedText, decodedResult) {
+        let xhttp;
+        function enviarDados(barcode)
+        {
+            xhttp = new XMLHttpRequest();
+            
+            if (!xhttp) 
+            {
+                alert('Não foi possível criar um objeto XMLHttpRequest.');
+                return false;
+            }
+            xhttp.onreadystatechange = mostraResposta;
+            xhttp.open('POST', 'barcode_request.php', true);
+            xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhttp.send('barcode=' + encodeURIComponent(barcode));
+        }
+
+        function mostraResposta() 
+        {
+            try
+            {
+                if (xhttp.readyState === XMLHttpRequest.DONE)
+                {
+                    if (xhttp.status === 200)
+                    {
+                        let resposta = JSON.parse(xhttp.responseText);
+
+                        let local = resposta.local;
+                        let sublocal = resposta.sublocal;
+                        let categoria = resposta.categoria;
+                        let nome = resposta.nome;
+                        let unidademedida = resposta.unidademedida;
+                        let quantidade = resposta.quantidade;
+
+                        alert(nome);
+                    }
+                    else
+                    {
+                        alert('Um problema ocorreu.');
+                    }
+                }
+            } 
+            catch (e)
+            {
+                alert("Ocorreu uma exceção: " + e.description);
+            }
+        }
+
+        var html5QrcodeScanner;
+        function scanner()
+        {
+            html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 60, qrbox: 250 });
+            html5QrcodeScanner.render(onScanSuccess);
+            return false;
+        }
+
+        function onScanSuccess(decodedText, decodedResult)
+        {
             // Handle on success condition with the decoded text or result.
             console.log(`Scan result: ${decodedText}`, decodedResult);
-            alert(decodedText);
+            enviarDados(decodedText);
             // ...
             html5QrcodeScanner.clear();
             // ^ this will stop the scanner (video feed) and clear the scan area.
         }
 
-        html5QrcodeScanner.render(onScanSuccess);
+        //html5QrcodeScanner.render(onScanSuccess);
     </script>
 
     <?php
@@ -114,7 +165,6 @@
             $nome = $_POST['nome'];
             $categoria = $_POST['categoria'];
             $local = $_POST['local'];
-            $barcode = $_POST['barcode'];
 
             function add_filter(&$first_filter, $var, $var_name)
             {
@@ -133,12 +183,10 @@
             $sql_login .= add_filter($first_filter, $nome, 'NOME');
             $sql_login .= add_filter($first_filter, $categoria, 'CATEGORIA');
             $sql_login .= add_filter($first_filter, $local, 'LOCAL');
-            $sql_login .= add_filter($first_filter, $barcode, 'BARCODE');
 
             $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
             $result = $db->getAllRowsFromQuery($sql_login);
             $db->close();
-
 
 
             echo "
