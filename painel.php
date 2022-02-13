@@ -32,22 +32,6 @@
     <!-- Cabeçalho -->
     <header style="height: 90px"><h1>Painel <?php echo "exibido para " . $_SESSION['nome']; ?></h1></header>
 
-    <ul>
-        <li>Cadastrar</li>
-        <ul>
-            <li>Usuário</li>
-            <li>Locais</li>
-            <li>Categorias</li>
-            <li>Unidades de Medida</li>
-            <li>Item/Compra</li>
-        </ul>
-        <li>Atualizar</li>
-        <ul>
-            <li>Usuário</li>
-            <li>Item/Compra</li>
-        </ul>
-    </ul>
-
     <a href="painel.php">Home</a>
     <a href="cadastro.php">Cadastrar</a>
 

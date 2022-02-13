@@ -33,47 +33,11 @@
     <header style="height: 90px"><h1>Painel <?php echo "exibido para " . $_SESSION['nome']; ?></h1></header>
 
     <a href="painel.php">Home</a>
-    <a href="cadastro.php">Cadastrar</a>
+    <a href="local.php">Local</a>
+    <a href="categoria.php">Categoria</a>
+    <a href="unidademedida.php">Unidade de Medida</a>
 
     <!-- Formulário de Login -->
-    <section class="sec-panel sec-form">
-        <h2>Local</h2>
-        <hr>
-        <form name="formulario-login" action="cadastro.php" method="POST">
-            <p class="form-input">Nome<input type="text" name="local_nome" placeholder="(Obrigatório)" size="20" maxlength="20" required></p>
-            <p class="form-input">Sublocal<input type="text" name="sublocal" placeholder="(Opcional)" size="20" maxlength="20"></p>
-
-            <!-- atributo onclick é temporário p/ esta Parcial 1 -->
-            <p><input id="form-button" type="submit" value="Cadastrar"></p>
-        </form>
-        <div style = "font-size:12px; color:#cc0000; margin-top:10px"><?php echo isset($error) ? $error : ""; ?></div>
-    </section>
-
-    <section class="sec-panel sec-form">
-        <h2>Categoria</h2>
-        <hr>
-        <form name="formulario-login" action="cadastro.php" method="POST">
-            <p class="form-input">Nome<input type="text" name="cat_nome" placeholder="(Obrigatório)" size="20" maxlength="20" required></p>
-
-            <!-- atributo onclick é temporário p/ esta Parcial 1 -->
-            <p><input id="form-button" type="submit" value="Cadastrar"></p>
-        </form>
-        <div style = "font-size:12px; color:#cc0000; margin-top:10px"><?php echo isset($error) ? $error : ""; ?></div>
-    </section>
-
-    <section class="sec-panel sec-form">
-        <h2>Unidade Medida</h2>
-        <hr>
-        <form name="formulario-login" action="cadastro.php" method="POST">
-            <p class="form-input">Nome<input type="text" name="medida_nome" placeholder="(Obrigatório)" size="16" maxlength="16" required></p>
-
-            <!-- atributo onclick é temporário p/ esta Parcial 1 -->
-            <p><input id="form-button" type="submit" value="Cadastrar"></p>
-        </form>
-        <div style = "font-size:12px; color:#cc0000; margin-top:10px"><?php echo isset($error) ? $error : ""; ?></div>
-    </section>
-
-
     <section class="sec-panel sec-form">
         <h2>Produto</h2>
         <hr>
