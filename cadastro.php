@@ -42,7 +42,10 @@
         <h2>Produto</h2>
         <hr>
         <form name="formulario-login" action="cadastro.php" method="POST">
-            <p class="form-input">Código de barras<input type="text" name="barcode" placeholder="(Opcional)" size="13" maxlength="13"></p>
+            <!--p class="form-input">Código de barras<input type="text" name="barcode" placeholder="(Opcional)" size="13" maxlength="13"></p-->
+            <p onclick="scanner();">Ler Código de Barras</p>
+            <div style="width: 500px" id="reader"></div>
+            <div id="barcodeoption"></div>
             <p class="form-input">Nome<input type="text" name="nome" placeholder="(Obrigatório)" size="50" maxlength="50" required></p>
             <p class="form-input">Quantidade<input type="number" name="quantidade" placeholder="(Obrigatório)" max="9999.99" step="0.01" required></p>
 
@@ -102,6 +105,33 @@
                     ?>
                 </select>
             </p>
+
+            <!-- Barcode scanner -->
+            <script src="html5-qrcode.min.js"></script>
+            <script>
+                var html5QrcodeScanner;
+                function scanner()
+                {
+                    html5QrcodeScanner = new Html5QrcodeScanner(
+                    "reader", { fps: 60, qrbox: 250 });
+                    html5QrcodeScanner.render(onScanSuccess);
+                    return false;
+                }
+
+                function onScanSuccess(decodedText, decodedResult)
+                {
+                    // Handle on success condition with the decoded text or result.
+                    console.log(`Scan result: ${decodedText}`, decodedResult);
+
+                    var barcodeoption = document.getElementById("barcodeoption");
+                    barcodeoption.innerHTML = `<input hidden type='text' name='barcode' value=${decodedText}>`;
+                    barcodeoption.innerHTML += `<p>Código de barras: ${decodedText}</p>`;
+
+                    // ...
+                    html5QrcodeScanner.clear();
+                    // ^ this will stop the scanner (video feed) and clear the scan area.
+                }
+            </script>
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script>
@@ -206,7 +236,6 @@
             $codmedida = $db->getRowFromQuery("SELECT codmedida FROM unidademedida WHERE nome = '$medida'")['codmedida'];
 
             $sql_login = "INSERT INTO item(barcode, nome, quantidade, codlocal, codcategoria, codmedida) VALUES(NULLIF('$barcode', ''), '$nome', '$quantidade', '$codlocal', '$codcategoria', '$codmedida')";
-
             $db->executeCommand($sql_login);
             $db->close();
         }
