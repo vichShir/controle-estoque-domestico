@@ -24,7 +24,7 @@ INSERT INTO item(barcode, nome, quantidade, codlocal, codcategoria, codmedida) V
 /* Produtos */
 CREATE VIEW VW_PRODUTOS
 AS
-SELECT l.nome LOCAL, l.sublocal SUBLOCAL, c.nome CATEGORIA, i.barcode BARCODE, i.nome NOME, u.nome UNIDADE_MEDIDA, i.quantidade QUANTIDADE
+SELECT i.coditem CODITEM, l.nome LOCAL, l.sublocal SUBLOCAL, c.nome CATEGORIA, i.barcode BARCODE, i.nome NOME, u.nome UNIDADE_MEDIDA, i.quantidade QUANTIDADE
 	FROM item i INNER JOIN local l
 		ON i.codlocal = l.codlocal
 		INNER JOIN categoria c

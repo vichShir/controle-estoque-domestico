@@ -15,7 +15,7 @@
 <html lang="pt-br">
   <head>
     <meta charset="utf-8">
-    <title>Painel | Estoque Doméstico</title>
+    <title>Adicionar Final | Estoque Doméstico</title>
     <link href="resources/css/main-style.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/form-style.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/footer-style.css" rel="stylesheet" type="text/css"/>
@@ -33,56 +33,17 @@
     <header style="height: 90px"><h1>Painel <?php echo "exibido para " . $_SESSION['nome']; ?></h1></header>
 
     <a href="painel.php">Home</a>
-    <a href="cadastro.php">Cadastrar</a>
-    <a href="add.php">Adicionar</a>
-
-    <p>Adicionar quantidade de produto já cadastrado no estoque</p>
-    <p>Fazer a baixa no estoque</p>
 
     <!-- Formulário de Login -->
     <section class="sec-panel sec-form">
-        <h2>Busca</h2>
+        <h2>Adicionar Quantidade</h2>
         <hr>
-        <form name="formulario-login" action="painel.php" method="POST">
-            <p class="form-input">Nome<input type="text" name="nome" placeholder="(Opcional)" size="50" maxlength="50"></p>
+        <form name="formulario-login" action="add_submit.php" method="POST">
+            <p class="form-input">Quantidade<input type="number" name="quantidade" placeholder="(Obrigatório)" max="9999.99" step="0.01" required></p>
+            <input hidden type='text' name='coditem' value=<?php echo isset($_GET['product_id']) ? $_GET['product_id'] : ""; ?>>
 
-            <p class="form-input">Categoria
-                <select id="categoria" name='categoria'>
-                    <option value="">Selecionar</option>
-                    <?php
-                        $sql_login = "SELECT DISTINCT nome FROM categoria";
-                        $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
-                        $result = $db->getAllRowsFromQuery($sql_login);
-                        $db->close();
-
-                        foreach ($result as $value)
-                        {
-                            echo "<option value='" . $value['nome'] . "'>" . $value['nome'] . "</option>";
-                        }
-                    ?>
-                </select>
-            </p>
-
-            <p class="form-input">Local
-                <select id="local" name='local'>
-                    <option value="">Selecionar</option>
-                    <?php
-                        $sql_login = "SELECT DISTINCT nome FROM local";
-                        $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
-                        $result = $db->getAllRowsFromQuery($sql_login);
-                        $db->close();
-
-                        foreach ($result as $value)
-                        {
-                            echo "<option value='" . $value['nome'] . "'>" . $value['nome'] . "</option>";
-                        }
-                    ?>
-                </select>
-            </p>
-
-            <p onclick="scanner();">Usar Scanner</p>
             <!-- atributo onclick é temporário p/ esta Parcial 1 -->
-            <p><input id="form-button" type="submit" value="Buscar"></p>
+            <p><input id="form-button" type="submit" value="Adicionar"></p>
         </form>
 
         <div style = "font-size:12px; color:#cc0000; margin-top:10px"><?php echo isset($error) ? $error : ""; ?></div>
@@ -164,62 +125,17 @@
     </script>
 
     <?php
-        if(isset($_POST['nome']))
+        if(isset($_POST['quantidade']))
         {
-            $nome = $_POST['nome'];
-            $categoria = $_POST['categoria'];
-            $local = $_POST['local'];
+            $coditem = $_POST['coditem'] ?? '';
+            $quantidade = $_POST['quantidade'] ?? '';
 
-            function add_filter(&$first_filter, $var, $var_name)
-            {
-                if(!empty($var) && $first_filter)
-                {
-                    $first_filter = false;
-                    return " WHERE $var_name LIKE '%$var%'";
-                }
-                else if(!empty($var) && !$first_filter)
-                    return " AND $var_name LIKE '%$var%'";
-            }
-
-            $sql_login = "SELECT LOCAL, SUBLOCAL, CATEGORIA, NOME, UNIDADE_MEDIDA, QUANTIDADE FROM VW_PRODUTOS";
-
-            $first_filter = true;
-            $sql_login .= add_filter($first_filter, $nome, 'NOME');
-            $sql_login .= add_filter($first_filter, $categoria, 'CATEGORIA');
-            $sql_login .= add_filter($first_filter, $local, 'LOCAL');
-
+            # Adicionar
             $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
-            $result = $db->getAllRowsFromQuery($sql_login);
+
+            $sql_login = "UPDATE item SET quantidade = quantidade + $quantidade WHERE coditem = $coditem";
+            $db->executeCommand($sql_login);
             $db->close();
-
-
-            echo "
-            <table class='table table-dark table-striped table-hover'>
-                <thead>
-                    <tr>
-                        <th scope='col'>LOCAL</th>
-                        <th scope='col'>SUBLOCAL</th>
-                        <th scope='col'>CATEGORIA</th>
-                        <th scope='col'>NOME</th>
-                        <th scope='col'>UNIDADE MEDIDA</th>
-                        <th scope='col'>QUANTIDADE</th>
-                    </tr>
-                </thead>
-                <tbody>";
-                for($i = 0; $i < sizeof($result); $i++)
-                {
-                    echo "<tr>";
-                    echo "
-                    <th scope='row'>" . $result[$i]['LOCAL'] . "</th>
-                    <td>" . $result[$i]['SUBLOCAL'] . "</td>
-                    <td>" . $result[$i]['CATEGORIA'] . "</td>
-                    <td>" . $result[$i]['NOME'] . "</td>
-                    <td>" . $result[$i]['UNIDADE_MEDIDA'] . "</td>
-                    <td>" . $result[$i]['QUANTIDADE'] . "</td>";
-                    echo "</tr>";
-                }
-                echo "</tbody>
-            </table>";
         }
     ?>
 

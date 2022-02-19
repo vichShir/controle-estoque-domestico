@@ -15,7 +15,7 @@
 <html lang="pt-br">
   <head>
     <meta charset="utf-8">
-    <title>Painel | Estoque Doméstico</title>
+    <title>Adicionar | Estoque Doméstico</title>
     <link href="resources/css/main-style.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/form-style.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/footer-style.css" rel="stylesheet" type="text/css"/>
@@ -33,17 +33,12 @@
     <header style="height: 90px"><h1>Painel <?php echo "exibido para " . $_SESSION['nome']; ?></h1></header>
 
     <a href="painel.php">Home</a>
-    <a href="cadastro.php">Cadastrar</a>
-    <a href="add.php">Adicionar</a>
-
-    <p>Adicionar quantidade de produto já cadastrado no estoque</p>
-    <p>Fazer a baixa no estoque</p>
 
     <!-- Formulário de Login -->
     <section class="sec-panel sec-form">
-        <h2>Busca</h2>
+        <h2>Adicionar</h2>
         <hr>
-        <form name="formulario-login" action="painel.php" method="POST">
+        <form name="formulario-login" action="add.php" method="POST">
             <p class="form-input">Nome<input type="text" name="nome" placeholder="(Opcional)" size="50" maxlength="50"></p>
 
             <p class="form-input">Categoria
@@ -181,7 +176,7 @@
                     return " AND $var_name LIKE '%$var%'";
             }
 
-            $sql_login = "SELECT LOCAL, SUBLOCAL, CATEGORIA, NOME, UNIDADE_MEDIDA, QUANTIDADE FROM VW_PRODUTOS";
+            $sql_login = "SELECT CODITEM, LOCAL, SUBLOCAL, CATEGORIA, NOME, UNIDADE_MEDIDA, QUANTIDADE FROM VW_PRODUTOS";
 
             $first_filter = true;
             $sql_login .= add_filter($first_filter, $nome, 'NOME');
@@ -203,6 +198,7 @@
                         <th scope='col'>NOME</th>
                         <th scope='col'>UNIDADE MEDIDA</th>
                         <th scope='col'>QUANTIDADE</th>
+                        <th scope='col'>SELECIONAR</th>
                     </tr>
                 </thead>
                 <tbody>";
@@ -215,7 +211,8 @@
                     <td>" . $result[$i]['CATEGORIA'] . "</td>
                     <td>" . $result[$i]['NOME'] . "</td>
                     <td>" . $result[$i]['UNIDADE_MEDIDA'] . "</td>
-                    <td>" . $result[$i]['QUANTIDADE'] . "</td>";
+                    <td>" . $result[$i]['QUANTIDADE'] . "</td>
+                    <td><a href='add_submit.php?product_id=" . $result[$i]['CODITEM'] . "'>SELECIONAR</a></td>";
                     echo "</tr>";
                 }
                 echo "</tbody>
