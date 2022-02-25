@@ -20,6 +20,7 @@
     <link href="resources/css/form-style.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/footer-style.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Importando fontes Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +37,7 @@
 
     <!-- Formulário de Login -->
     <section class="sec-panel sec-form">
-        <h2>Adicionar</h2>
+        <h2>Controle do Estoque</h2>
         <hr>
         <form name="formulario-login" action="add.php" method="POST">
             <p class="form-input">Nome<input type="text" name="nome" placeholder="(Opcional)" size="50" maxlength="50"></p>
@@ -75,6 +76,13 @@
                 </select>
             </p>
 
+            <p class="form-input">Operação
+                <select id="operacao" name='operacao'>
+                        <option value="add">Adicionar</option>
+                        <option value="rmv">Remover</option>
+                </select>
+            </p>
+
             <p onclick="scanner();">Usar Scanner</p>
             <!-- atributo onclick é temporário p/ esta Parcial 1 -->
             <p><input id="form-button" type="submit" value="Buscar"></p>
@@ -90,6 +98,7 @@
         "use strict";
 
         let xhttp;
+        let operacao;
         function enviarDados(barcode)
         {
             xhttp = new XMLHttpRequest();
@@ -115,6 +124,7 @@
                     {
                         let resposta = JSON.parse(xhttp.responseText);
 
+                        let coditem = resposta.coditem;
                         let local = resposta.local;
                         let sublocal = resposta.sublocal;
                         let categoria = resposta.categoria;
@@ -122,7 +132,8 @@
                         let unidademedida = resposta.unidademedida;
                         let quantidade = resposta.quantidade;
 
-                        alert(nome + "| Qtd: " + quantidade);
+                        let url = "add_submit.php?product_id=" + coditem + "&operacao=" + operacao;
+                        window.location.replace(url);
                     }
                     else
                     {
@@ -149,7 +160,10 @@
         {
             // Handle on success condition with the decoded text or result.
             console.log(`Scan result: ${decodedText}`, decodedResult);
+
+            operacao = $("#operacao option:selected").val();
             enviarDados(decodedText);
+
             // ...
             html5QrcodeScanner.clear();
             // ^ this will stop the scanner (video feed) and clear the scan area.
@@ -161,6 +175,7 @@
     <?php
         if(isset($_POST['nome']))
         {
+            $operacao = $_POST['operacao'];
             $nome = $_POST['nome'];
             $categoria = $_POST['categoria'];
             $local = $_POST['local'];
@@ -212,7 +227,7 @@
                     <td>" . $result[$i]['NOME'] . "</td>
                     <td>" . $result[$i]['UNIDADE_MEDIDA'] . "</td>
                     <td>" . $result[$i]['QUANTIDADE'] . "</td>
-                    <td><a href='add_submit.php?product_id=" . $result[$i]['CODITEM'] . "'>SELECIONAR</a></td>";
+                    <td><a href='add_submit.php?product_id=" . $result[$i]['CODITEM'] . "&operacao=" . $operacao . "'>SELECIONAR</a></td>";
                     echo "</tr>";
                 }
                 echo "</tbody>

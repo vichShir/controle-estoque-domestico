@@ -41,9 +41,10 @@
         <form name="formulario-login" action="add_submit.php" method="POST">
             <p class="form-input">Quantidade<input type="number" name="quantidade" placeholder="(Obrigatório)" max="9999.99" step="0.01" required></p>
             <input hidden type='text' name='coditem' value=<?php echo isset($_GET['product_id']) ? $_GET['product_id'] : ""; ?>>
+            <input hidden type='text' name='operacao' value=<?php echo isset($_GET['operacao']) ? $_GET['operacao'] : ""; ?>>
 
             <!-- atributo onclick é temporário p/ esta Parcial 1 -->
-            <p><input id="form-button" type="submit" value="Adicionar"></p>
+            <p><input id="form-button" type="submit" value="Contabilizar"></p>
         </form>
 
         <div style = "font-size:12px; color:#cc0000; margin-top:10px"><?php echo isset($error) ? $error : ""; ?></div>
@@ -128,12 +129,16 @@
         if(isset($_POST['quantidade']))
         {
             $coditem = $_POST['coditem'] ?? '';
+            $operacao = $_POST['operacao'] ?? '';
             $quantidade = $_POST['quantidade'] ?? '';
 
             # Adicionar
             $db = new Database(DB_SERVER, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
 
-            $sql_login = "UPDATE item SET quantidade = quantidade + $quantidade WHERE coditem = $coditem";
+            $sql_add = "UPDATE item SET quantidade = quantidade + $quantidade WHERE coditem = $coditem";
+            $sql_rmv = "UPDATE item SET quantidade = quantidade - $quantidade WHERE coditem = $coditem";
+
+            $sql_login = $operacao == "add" ? $sql_add : $sql_rmv;
             $db->executeCommand($sql_login);
             $db->close();
         }

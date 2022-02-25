@@ -34,10 +34,7 @@
 
     <a href="painel.php">Home</a>
     <a href="cadastro.php">Cadastrar</a>
-    <a href="add.php">Adicionar</a>
-
-    <p>Adicionar quantidade de produto já cadastrado no estoque</p>
-    <p>Fazer a baixa no estoque</p>
+    <a href="add.php">Contabilizar</a>
 
     <!-- Formulário de Login -->
     <section class="sec-panel sec-form">
